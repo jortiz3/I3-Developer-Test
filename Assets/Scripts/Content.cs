@@ -7,17 +7,13 @@ using UnityEngine.EventSystems;
 /// <summary>
 /// Handles information pertaining to each piece of content (i.e. Car Parts).
 /// </summary>
-[RequireComponent(typeof(MeshRenderer), typeof(MeshCollider))]
+[RequireComponent(typeof(Collider), typeof(Outline))]
 public class Content : MonoBehaviour {
-	private static string shader_default = "Standard";
-	private static string shader_lit = "Outline/Buffer";
-
 	[SerializeField] private string content_name; //the name to display on the content label
 	[SerializeField] private string content_description; //the description to display on the content label
 	[SerializeField] private Vector3 custom_arrow_position; //a custom position to set the arrow to if this content is selected
 	private Button button_selection; //the ui button for selecting this content
-	private MeshRenderer mr;
-	private Color color_original; //the original material color
+	private Outline outline; //reference to script for managing
 
 	public string Name { get { return content_name; } }
 	public string Description { get { return content_description; } }
@@ -44,7 +40,7 @@ public class Content : MonoBehaviour {
 		if (!this.Equals(ContentManager.instance.Selected)) { //if this content is not the selected content
 			if (!EventSystem.current.IsPointerOverGameObject()) { //ensure the mouse is not on the UI
 				SetHighlight(true);
-				mr.material.color = Color.cyan;
+				outline.OutlineColor = Color.cyan;
 			}
 		}
 	}
@@ -64,15 +60,14 @@ public class Content : MonoBehaviour {
 	/// </summary>
 	/// <param name="active">True if highlight is desired.</param>
 	public void SetHighlight(bool active) {
-		string shader_desired = active ? shader_lit : shader_default; //update shader name based on active
-		
-		mr.material.shader = Shader.Find(shader_desired); //update the renderer
-		mr.material.color = color_original; //reset the color
+		outline.enabled = active;
+		outline.OutlineColor = Color.white;
 	}
 
 	private void Start() {
-		mr = GetComponent<MeshRenderer>();
-		color_original = mr.material.color;
+		outline = GetComponent<Outline>(); //get the outline script
+		outline.enabled = false; //default to off
+
 		button_selection = ContentManager.instance.InstantiateButton(content_name); //instantiate a button in the screen ui
 		button_selection.onClick.AddListener(Select); //ensure when the button is clicked
 	}
