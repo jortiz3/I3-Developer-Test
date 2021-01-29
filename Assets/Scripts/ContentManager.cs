@@ -4,14 +4,17 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// Handles the visibility of content and content descriptions.
+/// Handles the selection of content and the visibility of both the content label and the arrow.
 /// </summary>
+[RequireComponent(typeof(LineRenderer))]
 public class ContentManager : MonoBehaviour {
 	public static ContentManager instance; //reference to the one instance of this class -- singleton pattern
 
-	[SerializeField] private Button template_button;
-	[SerializeField] private Transform label_content;
+	[SerializeField] private Transform label_content; //the reusable label for all content
+	[SerializeField] private Button template_button; //a template gameobject for buttons that is hidden within the scene -- to preserve the transform parent
 	private Content selected; //reference to the Content object the user has selected
+
+	public Content Selected { get { return selected; } }
 
 	private void Awake() {
 		if (instance != null) { //if another instance exists
@@ -67,8 +70,12 @@ public class ContentManager : MonoBehaviour {
 	}
 
 	private void Start() {
-		if (label_content != null) {
-			label_content.gameObject.SetActive(false);
-		}
+		if (label_content == null)
+			Debug.Log("Member 'label_content' is not assigned. Please assign a value using the inspector.");
+
+		if (template_button == null)
+			Debug.Log("Member 'template_button' is not assigned. Please assign a value using the inspector.");
+
+		label_content.gameObject.SetActive(false);
 	}
 }

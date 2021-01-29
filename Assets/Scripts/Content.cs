@@ -16,6 +16,7 @@ public class Content : MonoBehaviour {
 	[SerializeField] private string content_description;
 	private Button button_selection;
 	private MeshRenderer mr;
+	private Color color_original;
 
 	public string Name { get { return content_name; } }
 	public string Description { get { return content_description; } }
@@ -35,6 +36,21 @@ public class Content : MonoBehaviour {
 			Select(); //select this content
 	}
 
+	private void OnMouseEnter() { //first frame the mouse is hovering over this object
+		if (!this.Equals(ContentManager.instance.Selected)) { //if this content is not the selected content
+			if (!EventSystem.current.IsPointerOverGameObject()) { //ensure the mouse is not on the UI
+				SetHighlight(true);
+				mr.material.color = Color.cyan;
+			}
+		}
+	}
+
+	private void OnMouseExit() { //last frame the mouse is hovering over this object
+		if (!this.Equals(ContentManager.instance.Selected)) { //if this content is not the selected content
+			SetHighlight(false); //remove the highlight
+		}
+	}
+
 	private void Select() {
 		ContentManager.instance.Select(this); //have the manager select this content and pass info to the camera
 	}
@@ -44,12 +60,15 @@ public class Content : MonoBehaviour {
 	/// </summary>
 	/// <param name="active">True if highlight is desired.</param>
 	public void SetHighlight(bool active) {
-		string shader_current = active ? shader_lit : shader_default; //determine which shader to obtain
-		mr.material.shader = Shader.Find(shader_current); //update the renderer
+		string shader_desired = active ? shader_lit : shader_default; //update shader name based on active
+		
+		mr.material.shader = Shader.Find(shader_desired); //update the renderer
+		mr.material.color = color_original; //reset the color
 	}
 
 	private void Start() {
 		mr = GetComponent<MeshRenderer>();
+		color_original = mr.material.color;
 		button_selection = ContentManager.instance.InstantiateButton(content_name); //instantiate a button in the screen ui
 		button_selection.onClick.AddListener(Select); //ensure when the button is clicked
 	}
