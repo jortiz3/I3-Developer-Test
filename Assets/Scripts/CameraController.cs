@@ -1,4 +1,4 @@
-﻿//Coded by Justin Ortiz
+﻿//Written by Justin Ortiz
 
 using UnityEngine;
 
@@ -15,6 +15,8 @@ public class CameraController : MonoBehaviour {
 	private float zoom_previous; //tracks the previous zoom level for linear interpolation
 	private float zoom_current; //the current zoom level; modified frequently
 	private float zoom_desired; //tracks the target zoom level
+	[SerializeField] private float zoom_near = -3; //the zoom-in distance for the camera
+	[SerializeField] private float zoom_far = -10; //the zoom-out distance for the camera
 	private float transition_percentage; //the percentage of completion for the linear interpolation
 	private float rotation_angle; //the angle for the camera's rotation x
 	private float rotation_speed; //the speed in which the user can rotate the camera
@@ -30,14 +32,14 @@ public class CameraController : MonoBehaviour {
 	/// <summary>
 	/// Moves the focal point of the camera to a given object (or null)
 	/// </summary>
-	/// <param name="newFocus"></param>
+	/// <param name="newFocus">The new object to focus on.</param>
 	public void FocusOn(GameObject newFocus) {
 		if (newFocus != null) { //if given an object
 			focus_desired = newFocus.transform.position; //set the position
-			zoom_desired = -3f; //zoom in closer is desired
+			zoom_desired = zoom_near; //zoom in to view the object close up
 		} else { //no object given
 			focus_desired = Vector3.zero; //reset to the origin
-			zoom_desired = -10f; //zoom out to view the whole car
+			zoom_desired = zoom_far; //zoom out to view the whole car
 		}
 
 		focus_previous = focus_current; //set the current focus to the previous
