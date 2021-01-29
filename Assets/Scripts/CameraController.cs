@@ -1,9 +1,9 @@
-﻿using UnityEngine;
+﻿//Coded by Justin Ortiz
+
+using UnityEngine;
 
 /// <summary>
 /// Handles the rotation of the camera around a focus point.
-/// 
-/// File created by Justin Ortiz 1/28/2021
 /// </summary>
 public class CameraController : MonoBehaviour {
 	public static CameraController instance; //the one instance of this class -- singleton pattern

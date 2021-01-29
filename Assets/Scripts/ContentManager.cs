@@ -1,17 +1,16 @@
-﻿using UnityEngine;
+﻿//Coded by Justin Ortiz
+
+using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
 /// Handles the visibility of content and content descriptions.
 /// </summary>
-/**
- * File created by Justin Ortiz 1/28/2021.
- */
 public class ContentManager : MonoBehaviour {
 	public static ContentManager instance; //reference to the one instance of this class -- singleton pattern
 
 	[SerializeField] private Button template_button;
-	[SerializeField] private Transform parent_content_label;
+	[SerializeField] private Transform label_content;
 	private Content selected; //reference to the Content object the user has selected
 
 	private void Awake() {
@@ -55,9 +54,21 @@ public class ContentManager : MonoBehaviour {
 
 		if (selected != null) { //if there is content currently selected
 			selected.SetHighlight(true); //highlight the content
+
+			label_content.Find("Title").GetComponent<Text>().text = selected.Name; //update the title text
+			label_content.Find("Description").GetComponent<Text>().text = selected.Description; //update the description text
+			label_content.gameObject.SetActive(true); //set label to visible
+
 			CameraController.instance.FocusOn(selected.gameObject); //focus the camera on the selected content
 		} else {
+			label_content.gameObject.SetActive(false); //hide the label
 			CameraController.instance.FocusOn(null); //focus the camera on null
+		}
+	}
+
+	private void Start() {
+		if (label_content != null) {
+			label_content.gameObject.SetActive(false);
 		}
 	}
 }

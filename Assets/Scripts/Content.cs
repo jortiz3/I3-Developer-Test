@@ -1,13 +1,12 @@
-﻿using UnityEngine;
+﻿//Coded by Justin Ortiz
+
+using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 /// <summary>
 /// Handles information pertaining to each piece of content (i.e. Car Parts).
 /// </summary>
-/**
- * File created by Justin Ortiz 1/28/2021.
- */
 [RequireComponent(typeof(MeshRenderer), typeof(MeshCollider))]
 public class Content : MonoBehaviour {
 	private static string shader_default = "Standard";
