@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 /// <summary>
 /// Handles information pertaining to each piece of content (i.e. Car Parts).
@@ -10,7 +11,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(MeshRenderer), typeof(MeshCollider))]
 public class Content : MonoBehaviour {
 	private static string shader_default = "Standard";
-	private static string shader_lit = "Legacy Shaders/Self-Illumin/Diffuse";
+	private static string shader_lit = "Outline/Buffer";
 
 	[SerializeField] private string content_name;
 	[SerializeField] private string content_description;
@@ -30,8 +31,13 @@ public class Content : MonoBehaviour {
 		Destroy(button_selection.gameObject); //also destroy its corresponding button
 	}
 
-	private void OnMouseDown() { //when this object is clicked
-		ContentManager.instance.Select(this); //select it
+	private void OnMouseDown() { //when this object is clicked (collider required)
+		if (!EventSystem.current.IsPointerOverGameObject()) //ensure the mouse is not on the UI
+			Select(); //select this content
+	}
+
+	private void Select() {
+		ContentManager.instance.Select(this); //have the manager select this content and pass info to the camera
 	}
 
 	/// <summary>
@@ -46,6 +52,6 @@ public class Content : MonoBehaviour {
 	private void Start() {
 		mr = GetComponent<MeshRenderer>();
 		button_selection = ContentManager.instance.InstantiateButton(content_name); //instantiate a button in the screen ui
-		button_selection.onClick.AddListener(OnMouseDown); //ensure when the button is clicked
+		button_selection.onClick.AddListener(Select); //ensure when the button is clicked
 	}
 }
